@@ -39,9 +39,10 @@ export default function LiveMap({ spots, mqttNodes, meshNodes, repeaters, height
   useEffect(() => {
     if (!ref.current || mapRef.current) return;
     const map = L.map(ref.current, { center: [44.6, 16.5], zoom: 7, preferCanvas: true, worldCopyJump: true });
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-      attribution: "&copy; OpenStreetMap &copy; CARTO · granice: Natural Earth",
-      maxZoom: 18,
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · granice: Natural Earth',
+      className: "osm-dark",
+      maxZoom: 19,
     }).addTo(map);
     map.createPane("granice").style.zIndex = "350";
     const g = {

@@ -21,9 +21,10 @@ export default function MapView({
   useEffect(() => {
     if (!ref.current || mapRef.current) return;
     const map = L.map(ref.current, { center, zoom, scrollWheelZoom: false });
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-      attribution: '&copy; OpenStreetMap &copy; CARTO',
-      maxZoom: 18,
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      className: "osm-dark",
+      maxZoom: 19,
     }).addTo(map);
     mapRef.current = map;
     layerRef.current = L.layerGroup().addTo(map);
