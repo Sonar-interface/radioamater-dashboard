@@ -1,6 +1,16 @@
 // Vježbovna ispitna pitanja (A i P razred), preneseno iz prethodnog dashboarda.
 // Nisu službena: provjeriti uz važeći Pravilnik o amaterskoj radijskoj službi (NN 150/2022) i HAKOM.
-export type Q = { s: 1 | 2 | 3; c: "svi" | "A" | "P"; q: string; a: string[]; c_: number; e: string };
+export type Q = {
+  s: number; // faza: 1 propisi, 2 tehnika, 3 postupci
+  c: string; // "svi" | "A" | "P"
+  q: string;
+  a: string[];
+  c_: number; // indeks točnog odgovora
+  e: string;
+  src?: string; // "kljuc" = ispitna pitanja s ključem, inače dodatna vježba
+  ref?: string;
+  warn?: string; // ključ odstupa od Pravilnika NN 150/22
+};
 export const STAGES: Record<number, string> = { 1: "Propisi", 2: "Tehnika", 3: "Postupci" };
 export const QUESTIONS: Q[] = [
  {s:1,c:'svi',q:'Tko izdaje dozvolu za uporabu radiofrekvencijskog spektra u amaterskoj službi u Hrvatskoj?',a:['Savez (HRS)','HAKOM (Hrvatska regulatorna agencija za mrežne djelatnosti)','Ministarstvo mora','Lokalni radio klub'],c_:1,e:'Pravilnik: dozvolu izdaje Agencija. Bez položenog ispita i dozvole postaja se ne smije koristiti.'},
