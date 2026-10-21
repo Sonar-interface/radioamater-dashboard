@@ -156,7 +156,7 @@ export default function LiveMap({ spots, mqttNodes, meshNodes, repeaters, height
         t['batteryLevel'] != null ? row("Baterija", `${v(t['batteryLevel'])} %${t['voltage'] != null ? ` · ${v(t['voltage'])} V` : ""}`) : "",
         t['channelUtilization'] != null ? row("Iskorištenost kanala", `${v(t['channelUtilization'])} %`) : "",
         t['airUtilTx'] != null ? row("Vrijeme odašiljanja", `${v(t['airUtilTx'])} %`) : "",
-        t['uptimeSeconds'] != null ? row("Rad (uptime)", dur(Number(t['uptimeSeconds']))) : "",
+        (t['uptime'] ?? t['uptimeSeconds']) != null ? row("Rad (uptime)", dur(Number(t['uptime'] ?? t['uptimeSeconds']))) : "",
         t['snr'] != null ? row("SNR", `${v(t['snr'])} dB`) : "",
         t['hopsAway'] != null ? row("Skokova", v(t['hopsAway'])) : "",
       ].join("");

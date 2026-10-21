@@ -1,7 +1,7 @@
 // Ispitna pitanja s ključevima odgovora (P i A razred), iz dokumenta
 // "PREGLED ZA RADIOAMATERSKI ISPIT s pitanjima" (ekstrakt iz materijala za tečaj, ključevi Odgovori_A/P-razred.docx).
 // Gdje ključ odstupa od Pravilnika NN 150/22, polje warn nosi napomenu iz dokumenta.
-// Pitanja 7.3 br. 2 i br. 7 imaju sliku (polje fig) iscrtanu u Three.js (src/components/ExamFigure.tsx).
+// Pitanja s ilustracijom (polje fig) iscrtana su u Three.js (src/components/ExamFigure.tsx).
 import type { Q } from "./ispit";
 export const KLJUC: Q[] = [
  {
@@ -621,7 +621,8 @@ export const KLJUC: Q[] = [
   "c_": 2,
   "e": "Točan odgovor prema ključu: c).",
   "src": "kljuc",
-  "ref": "7.3 br. 1"
+  "ref": "7.3 br. 1",
+  "fig": "magnetno"
  },
  {
   "s": 2,
@@ -652,7 +653,8 @@ export const KLJUC: Q[] = [
   "c_": 1,
   "e": "Točan odgovor prema ključu: b).",
   "src": "kljuc",
-  "ref": "7.3 br. 3"
+  "ref": "7.3 br. 3",
+  "fig": "sinus"
  },
  {
   "s": 2,
@@ -667,7 +669,8 @@ export const KLJUC: Q[] = [
   "c_": 1,
   "e": "Točan odgovor prema ključu: b).",
   "src": "kljuc",
-  "ref": "7.3 br. 4"
+  "ref": "7.3 br. 4",
+  "fig": "ohm"
  },
  {
   "s": 2,
@@ -728,7 +731,8 @@ export const KLJUC: Q[] = [
   "c_": 0,
   "e": "Točan odgovor prema ključu: a).",
   "src": "kljuc",
-  "ref": "7.3 br. 8"
+  "ref": "7.3 br. 8",
+  "fig": "serija"
  },
  {
   "s": 2,
@@ -833,7 +837,8 @@ export const KLJUC: Q[] = [
   "c_": 1,
   "e": "Točan odgovor prema ključu: b).",
   "src": "kljuc",
-  "ref": "7.3 br. 15"
+  "ref": "7.3 br. 15",
+  "fig": "dijagram"
  },
  {
   "s": 2,
@@ -848,7 +853,8 @@ export const KLJUC: Q[] = [
   "c_": 0,
   "e": "Točan odgovor prema ključu: a).",
   "src": "kljuc",
-  "ref": "7.3 br. 16"
+  "ref": "7.3 br. 16",
+  "fig": "jonosfera"
  },
  {
   "s": 2,
@@ -968,7 +974,8 @@ export const KLJUC: Q[] = [
   "c_": 1,
   "e": "Točan odgovor prema ključu: b).",
   "src": "kljuc",
-  "ref": "7.4 br. 4"
+  "ref": "7.4 br. 4",
+  "fig": "ssb"
  },
  {
   "s": 3,
@@ -998,7 +1005,8 @@ export const KLJUC: Q[] = [
   "c_": 2,
   "e": "Točan odgovor prema ključu: c).",
   "src": "kljuc",
-  "ref": "7.4 br. 6"
+  "ref": "7.4 br. 6",
+  "fig": "ssb"
  },
  {
   "s": 3,
@@ -1013,7 +1021,8 @@ export const KLJUC: Q[] = [
   "c_": 3,
   "e": "Točan odgovor prema ključu: d).",
   "src": "kljuc",
-  "ref": "7.4 br. 7"
+  "ref": "7.4 br. 7",
+  "fig": "polarizacija"
  },
  {
   "s": 3,
