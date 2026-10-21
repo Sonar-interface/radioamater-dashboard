@@ -1,0 +1,44 @@
+name: Osvježi radioamaterske podatke
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"     # GitHub može kasniti nekoliko minuta
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: izvori
+  cancel-in-progress: false
+
+jobs:
+  osvjezi:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instaliraj pakete
+        run: pip install meshtastic paho-mqtt cryptography
+
+      - name: Dohvati podatke (PSKReporter, solar, Meshtastic)
+        run: |
+          # zapis traje ~9 min; čvorovi se spajaju s prethodnim data.json
+          timeout 540 python izvori.py --minutes 9 || true
+
+      - name: Spremi data.json ako se promijenio
+        run: |
+          git config user.name "izvori-bot"
+          git config user.email "izvori-bot@users.noreply.github.com"
+          git add data.json
+          if git diff --cached --quiet; then
+            echo "Nema promjena"
+          else
+            git commit -m "Osvježi podatke $(date -u +%Y-%m-%dT%H:%MZ)"
+            git push
+          fi
