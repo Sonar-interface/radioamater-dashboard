@@ -16,6 +16,41 @@ const C = { spot: "#e3b341", rx: "#58a6ff", mqtt: "#a371f7", mesh: "#d2a8ff", rp
 const fmtTime = (t?: number | null) => (t ? new Date(t * 1000).toLocaleString("hr-HR", { timeZone: "Europe/Zagreb" }) : "—");
 const row = (k: string, v: string) => `<tr><th style="text-align:left;padding-right:8px;opacity:.7;font-weight:500">${k}</th><td>${v}</td></tr>`;
 
+
+const dur = (sec?: number) => {
+  if (sec == null) return "—";
+  const d = Math.floor(sec / 86400), h = Math.floor((sec % 86400) / 3600), m = Math.floor((sec % 3600) / 60);
+  return (d ? `${d} d ` : "") + (h || d ? `${h} h ` : "") + `${m} min`;
+};
+const v = (x: unknown, unit = "") => (x == null || x === "" ? "—" : `${esc(String(x))}${unit}`);
+
+/** Telemetrija čvora: iz MQTT paketa (uživo) i iz meshmap.net zapisa. */
+function nodeTelemetry(n: MqttNode) {
+  const rows: string[] = [];
+  if (n.battery != null) rows.push(row("Baterija", `${n.battery} %${n.voltage != null ? ` · ${n.voltage} V` : ""}`));
+  if (n.chUtil != null) rows.push(row("Iskorištenost kanala", `${n.chUtil} %`));
+  if (n.airUtil != null) rows.push(row("Vrijeme odašiljanja", `${n.airUtil} %`));
+  if (n.uptime != null) rows.push(row("Rad (uptime)", dur(n.uptime)));
+  if (n.snr != null) rows.push(row("SNR (zadnji paket)", `${n.snr} dB${n.rssi != null ? ` · RSSI ${n.rssi} dBm` : ""}`));
+  if (n.hops != null) rows.push(row("Skokova do čvora", String(n.hops)));
+  if (n.temp != null) rows.push(row("Temperatura", `${n.temp} °C`));
+  if (n.humidity != null) rows.push(row("Vlažnost", `${n.humidity} %`));
+  if (n.pressure != null) rows.push(row("Tlak", `${n.pressure} hPa`));
+  if (n.alt != null) rows.push(row("Visina", `${n.alt} m`));
+  if (n.heard != null) rows.push(row("Zadnji paket (uživo)", fmtTime(n.heard)));
+  return rows.length ? rows.join("") : row("Telemetrija", "nije primljena na javnom MQTT-u");
+}
+
+/** Sva polja iz meshmap.net zapisa, sklopiva, da se vidi što izvor daje. */
+function rawList(raw?: Record<string, string | number | boolean>) {
+  if (!raw) return "";
+  const items = Object.entries(raw)
+    .filter(([k]) => !["id", "longName", "shortName"].includes(k))
+    .map(([k, x]) => row(esc(k), v(x)))
+    .join("");
+  return items ? `<details style="margin-top:4px"><summary style="cursor:pointer;opacity:.8">Sva polja izvora (meshmap.net)</summary><table style="font-size:11px">${items}</table></details>` : "";
+}
+
 function spotPopup(s: PskSpot) {
   const tx = s.txLatLon, rx = s.rxLatLon;
   let geo = "";
@@ -104,10 +139,8 @@ export default function LiveMap({ spots, mqttNodes, meshNodes, repeaters, height
     g.clearLayers();
     for (const n of mqttNodes) {
       if (typeof n.lat !== "number" || typeof n.lon !== "number") continue;
-      const html = `<b>${esc(n.name ?? n.id)}</b><table style="margin-top:4px;font-size:12px">${
-        row("ID", esc(n.id)) + row("Uređaj", esc(n.hw ?? "—")) + row("Visina", n.alt != null ? `${n.alt} m` : "—") +
-        row("Baterija", n.battery != null ? `${n.battery} %` : "—") + row("Napon", n.voltage != null ? `${n.voltage} V` : "—") +
-        row("Zadnje viđen", fmtTime(n.lastSeen))
+      const html = `<b>${esc(n.name ?? n.id)}</b> <span style="opacity:.6">${esc(n.id)}</span><table style="margin-top:4px;font-size:12px">${
+        row("Uređaj", esc(n.hw ?? "—")) + row("Lokacija", `${n.lat!.toFixed(4)}, ${n.lon!.toFixed(4)}`) + nodeTelemetry(n)
       }</table><div style="opacity:.6;font-size:11px;margin-top:4px">Izvor: javni Meshtastic MQTT (EU_868)</div>`;
       L.circleMarker([n.lat, n.lon], { radius: 5, color: C.mqtt, fillColor: C.mqtt, fillOpacity: 0.85, weight: 1 }).bindPopup(html).addTo(g);
     }
@@ -118,9 +151,19 @@ export default function LiveMap({ spots, mqttNodes, meshNodes, repeaters, height
     if (!g) return;
     g.clearLayers();
     for (const n of meshNodes) {
-      const html = `<b>${esc(n.longName || n.shortName || n.id)}</b><table style="margin-top:4px;font-size:12px">${
-        row("ID", esc(n.id)) + row("Uređaj", esc(n.hw)) + row("Uloga", esc(n.role)) + row("Kanal", esc(n.channel)) + row("Zadnje viđen", fmtTime(n.lastSeen))
-      }</table><div style="opacity:.6;font-size:11px;margin-top:4px">Izvor: meshmap.net</div>`;
+      const t = n.raw ?? {};
+      const telem = [
+        t['batteryLevel'] != null ? row("Baterija", `${v(t['batteryLevel'])} %${t['voltage'] != null ? ` · ${v(t['voltage'])} V` : ""}`) : "",
+        t['channelUtilization'] != null ? row("Iskorištenost kanala", `${v(t['channelUtilization'])} %`) : "",
+        t['airUtilTx'] != null ? row("Vrijeme odašiljanja", `${v(t['airUtilTx'])} %`) : "",
+        t['uptimeSeconds'] != null ? row("Rad (uptime)", dur(Number(t['uptimeSeconds']))) : "",
+        t['snr'] != null ? row("SNR", `${v(t['snr'])} dB`) : "",
+        t['hopsAway'] != null ? row("Skokova", v(t['hopsAway'])) : "",
+      ].join("");
+      const html = `<b>${esc(n.longName || n.shortName || n.id)}</b> <span style="opacity:.6">${esc(n.id)}</span><table style="margin-top:4px;font-size:12px">${
+        row("Uređaj", esc(n.hw)) + row("Uloga", esc(n.role)) + row("Lokacija", `${n.lat.toFixed(4)}, ${n.lon.toFixed(4)}`) +
+        (telem || row("Telemetrija", "nema u izvoru")) + row("Zadnje viđen", fmtTime(n.lastSeen))
+      }</table>${rawList(n.raw)}<div style="opacity:.6;font-size:11px;margin-top:4px">Izvor: meshmap.net</div>`;
       L.circleMarker([n.lat, n.lon], { radius: 4, color: C.mesh, fillColor: C.mesh, fillOpacity: 0.6, weight: 1 }).bindPopup(html).addTo(g);
     }
   }, [meshNodes]);

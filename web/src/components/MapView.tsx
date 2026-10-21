@@ -21,6 +21,9 @@ export default function MapView({
   useEffect(() => {
     if (!ref.current || mapRef.current) return;
     const map = L.map(ref.current, { center, zoom, scrollWheelZoom: false });
+    // Kotačić zumira kartu tek nakon klika na nju; inače se stranica pomiče normalno.
+    map.on("click", () => map.scrollWheelZoom.enable());
+    map.on("mouseout", () => map.scrollWheelZoom.disable());
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       className: "osm-dark",

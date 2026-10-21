@@ -1,7 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { getLive, getMeshNodes } from "@/lib/live.functions";
-import { ErrorNote, Loading, Map, PageHeader, Panel, Source } from "@/components/site";
+import { ErrorNote, Loading, PageHeader, Panel, Source } from "@/components/site";
+import { lazy, Suspense } from "react";
+import { ClientOnly } from "@tanstack/react-router";
+
+const LiveMap = lazy(() => import("@/components/LiveMap"));
 import { seo } from "@/lib/seo";
 import { esc } from "@/lib/utils";
 
@@ -56,7 +60,11 @@ function Page() {
       <Panel title={q.data ? `Aktivni Meshtastic čvorovi u regiji (${q.data.length}, zadnjih 48 h)` : "Aktivni Meshtastic čvorovi"}>
         {q.isLoading ? <Loading /> : q.isError ? <ErrorNote /> : (
           <>
-            <Map markers={[...mqtt.map((n) => ({ lat: n.lat as number, lng: n.lon as number, color: "#a371f7", popup: `<b>${esc(n.name ?? n.id)}</b><br/>${esc(n.hw ?? "")}<br/>MQTT uživo · ${new Date(n.lastSeen * 1000).toLocaleString("hr-HR")}${n.battery != null ? ` · baterija ${n.battery} %` : ""}` })), ...(q.data ?? []).map((n) => ({ lat: n.lat, lng: n.lon, popup: `<b>${esc(n.longName || n.shortName)}</b><br/>${esc(n.hw)}<br/>${esc(n.role)} · ${esc(n.channel)}<br/>${new Date(n.lastSeen * 1000).toLocaleString("hr-HR")}` }))]} />
+            <ClientOnly fallback={<div style={{ height: 520 }} className="rounded-xl bg-panel" />}>
+              <Suspense fallback={<div style={{ height: 520 }} className="rounded-xl bg-panel" />}>
+                <LiveMap spots={[]} repeaters={[]} mqttNodes={mqtt} meshNodes={q.data ?? []} height={520} />
+              </Suspense>
+            </ClientOnly>
             <p className="mt-2 text-xs text-muted-foreground">Ljubičasto: čvorovi koje naš kolektor čuje izravno na javnom MQTT-u ({mqtt.length}). Narančasto: meshmap.net. Prikazani su samo čvorovi koji šalju poziciju; stvarni broj je veći.</p>
           </>
         )}

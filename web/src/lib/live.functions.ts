@@ -56,6 +56,7 @@ export type Repeater = {
 };
 
 export type MeshNode = {
+  raw?: Record<string, string | number | boolean>; // sva jednostavna polja iz meshmap.net zapisa
   id: string;
   longName: string;
   shortName: string;
@@ -75,6 +76,9 @@ export type PskSpot = {
 export type MqttNode = {
   id: string; name?: string; hw?: string; lat?: number; lon?: number; alt?: number;
   battery?: number; voltage?: number; lastSeen: number;
+  snr?: number; rssi?: number; hops?: number; heard?: number;
+  chUtil?: number; airUtil?: number; uptime?: number;
+  temp?: number; humidity?: number; pressure?: number;
 };
 export type LiveMeta = {
   updated: string; status: Record<string, string | number>; errors: string[];

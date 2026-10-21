@@ -232,10 +232,12 @@ def meshmap_once():
         if now - last > 48 * 3600:
             continue
         parts = topic.split("/")
+        raw = {k: (v[:160] if isinstance(v, str) else v) for k, v in n.items()
+               if isinstance(v, (int, float, str, bool)) and k not in ("latitude", "longitude")}
         out.append({"id": nid, "longName": str(n.get("longName") or "").strip(),
                     "shortName": str(n.get("shortName") or "").strip(), "hw": str(n.get("hwModel") or ""),
                     "role": str(n.get("role") or ""), "lat": lat, "lon": lon, "lastSeen": last,
-                    "channel": parts[3] if len(parts) > 3 else ""})
+                    "channel": parts[-2] if len(parts) > 2 else "", "raw": raw})
     out.sort(key=lambda x: -x["lastSeen"])
     write("mesh.json", out)
     ok("meshmap", f"OK, {len(out)} čvorova u regiji")
@@ -310,6 +312,12 @@ def handle_mesh(payload):
             state["status"]["mesh_decrypt_ok"] += 1
             rec = state["nodes"].setdefault(node, {"lastSeen": now})
             rec["lastSeen"] = now
+        with lock:
+            if pkt.rx_snr or pkt.rx_rssi:
+                rec["snr"] = round(pkt.rx_snr, 2); rec["rssi"] = pkt.rx_rssi
+            if pkt.hop_start:
+                rec["hops"] = max(0, pkt.hop_start - pkt.hop_limit)
+            rec["heard"] = now
         if port == portnums_pb2.POSITION_APP:
             pos = mesh_pb2.Position(); pos.ParseFromString(data.payload)
             if pos.latitude_i or pos.longitude_i:
@@ -322,9 +330,15 @@ def handle_mesh(payload):
                 rec["hw"] = mesh_pb2.HardwareModel.Name(u.hw_model)
         elif port == portnums_pb2.TELEMETRY_APP:
             t = telemetry_pb2.Telemetry(); t.ParseFromString(data.payload)
-            if t.HasField("device_metrics"):
-                with lock:
-                    rec["battery"] = t.device_metrics.battery_level; rec["voltage"] = round(t.device_metrics.voltage, 2)
+            dm, em = t.device_metrics, t.environment_metrics
+            with lock:
+                if t.HasField("device_metrics"):
+                    rec["battery"] = dm.battery_level; rec["voltage"] = round(dm.voltage, 2)
+                    rec["chUtil"] = round(dm.channel_utilization, 1); rec["airUtil"] = round(dm.air_util_tx, 1)
+                    rec["uptime"] = dm.uptime_seconds
+                if t.HasField("environment_metrics"):
+                    rec["temp"] = round(em.temperature, 1); rec["humidity"] = round(em.relative_humidity, 1)
+                    rec["pressure"] = round(em.barometric_pressure, 1)
     except (DecodeError, ValueError, UnicodeDecodeError):
         with lock:
             state["status"]["mesh_decrypt_fail"] += 1
