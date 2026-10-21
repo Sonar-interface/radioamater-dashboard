@@ -1,11 +1,23 @@
-# Radioamaterski pregled – Hrvatska
+# HAM Hrvatska – radioamaterski portal
 
-Dashboard: `radioamater_dashboard.html` (otvori preko GitHub Pages).
+Stranica: https://sonar-interface.github.io/radioamater-dashboard/
 
-`data.json` osvježava GitHub Actions (`.github/workflows/izvori.yml`) svakih ~10 min:
-- PSKReporter spotovi digitalnih modova
-- solarni uvjeti (hamqsl.com, NEPROVJERENO)
-- Meshtastic čvorovi, javni MQTT (dekodiranje NEPROVJERENO)
+Izgled i stranice preuzeti su iz Lovable projekta "Jadran Radio Kompas" i prilagođeni za GitHub Pages
+(statični build, hash routing). Dodano: Karta uživo (PSKReporter, Meshtastic MQTT, meshmap.net, repetitori,
+granice HR i susjeda) i Ispit A i P.
 
-Ako `status` u `data.json` piše "greška", izvor nije dostupan. Dashboard tada ne prikazuje lažne podatke.
-Javni podaci: sadrže samo identifikatore javnih čvorova i spotove; bez pozivnog znaka i lokacije korisnika.
+## Kako radi
+- `izvori.py` skuplja javne podatke i sprema ih u `data/`. Pokreće ga GitHub Action
+  (`.github/workflows/izvori.yml`) svakih ~10 min. Stranica samo čita te datoteke.
+- Izvori: PSKReporter, javni Meshtastic MQTT (EU_868, zadani kanal), HamQSL (N0NBH), NOAA SWPC,
+  HamQTH DX klaster, aviationweather.gov, OurAirports, HearHam, meshmap.net, CelesTrak.
+- Stanje svakog izvora vidi se na stranici Karta uživo (Stanje izvora). Ako izvor ne radi,
+  stranica prikazuje poruku, a ne izmišljene podatke.
+
+## Izmjene izgleda
+Izvorni kod je u `web/`. Nakon izmjene pokrenuti `web/objavi.sh` i commitati korijen
+(`index.html`, `assets/`).
+
+## Privatnost
+Stranica nema kolačića ni analitike. Lovable prijava grešaka je uklonjena. Skripta ne šalje
+nikakve osobne podatke; samo čita javne izvore.

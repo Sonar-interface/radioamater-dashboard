@@ -26,19 +26,21 @@ jobs:
       - name: Instaliraj pakete
         run: pip install meshtastic paho-mqtt cryptography
 
-      - name: Dohvati podatke (PSKReporter, solar, Meshtastic)
+      - name: Dohvati podatke (PSKReporter, solar, DX, METAR, Meshtastic, repetitori, sateliti)
         run: |
-          # zapis traje ~9 min; čvorovi se spajaju s prethodnim data.json
+          # zapis traje ~9 min; čvorovi se spajaju s prethodnim data/live.json
           timeout 540 python izvori.py --minutes 9 || true
 
-      - name: Spremi data.json ako se promijenio
+      - name: Spremi podatke ako su se promijenili
         run: |
           git config user.name "izvori-bot"
           git config user.email "izvori-bot@users.noreply.github.com"
-          git add data.json
+          rm -f data/*.tmp
+          git add data
           if git diff --cached --quiet; then
             echo "Nema promjena"
           else
             git commit -m "Osvježi podatke $(date -u +%Y-%m-%dT%H:%MZ)"
+            git pull --rebase -X theirs origin main || true
             git push
           fi
