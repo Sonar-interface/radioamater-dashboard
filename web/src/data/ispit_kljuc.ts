@@ -1,7 +1,7 @@
 // Ispitna pitanja s ključevima odgovora (P i A razred), iz dokumenta
 // "PREGLED ZA RADIOAMATERSKI ISPIT s pitanjima" (ekstrakt iz materijala za tečaj, ključevi Odgovori_A/P-razred.docx).
 // Gdje ključ odstupa od Pravilnika NN 150/22, polje warn nosi napomenu iz dokumenta.
-// Izostavljena su 2 pitanja koja traže sliku (7.3 br. 2 i br. 7) jer slike nisu u dokumentu.
+// Pitanja 7.3 br. 2 i br. 7 imaju sliku (polje fig) iscrtanu u Three.js (src/components/ExamFigure.tsx).
 import type { Q } from "./ispit";
 export const KLJUC: Q[] = [
  {
@@ -626,6 +626,22 @@ export const KLJUC: Q[] = [
  {
   "s": 2,
   "c": "P",
+  "q": "Napon koji ukazuje voltmetar (prema slici):",
+  "a": [
+   "3 V",
+   "1.5 V",
+   "0 V",
+   "4.5 V"
+  ],
+  "c_": 2,
+  "e": "Točan odgovor prema ključu: c). Dvije ćelije od 1,5 V spojene su suprotno (plus na plus), pa se njihovi naponi poništavaju: 1,5 V − 1,5 V = 0 V.",
+  "src": "kljuc",
+  "ref": "7.3 br. 2",
+  "fig": "voltmetar"
+ },
+ {
+  "s": 2,
+  "c": "P",
   "q": "Imamo oscilaciju frekvencije 50 Hz. Koliko ima titraja u 5 sekundi?",
   "a": [
    "10",
@@ -682,6 +698,22 @@ export const KLJUC: Q[] = [
   "e": "Točan odgovor prema ključu: c).",
   "src": "kljuc",
   "ref": "7.3 br. 6"
+ },
+ {
+  "s": 2,
+  "c": "P",
+  "q": "Simbol prikazan na slici je:",
+  "a": [
+   "otpornik s fiksnom otpornošću",
+   "otpornik s promjenjivom otpornošću",
+   "osigurač",
+   "potenciometar"
+  ],
+  "c_": 0,
+  "e": "Točan odgovor prema ključu: a). Pravokutnik s dva izvoda je simbol stalnog (fiksnog) otpornika prema normi IEC. Promjenjivi otpornik ima kosu strelicu preko simbola, potenciometar strelicu na klizač, a osigurač liniju kroz pravokutnik.",
+  "src": "kljuc",
+  "ref": "7.3 br. 7",
+  "fig": "otpornik"
  },
  {
   "s": 2,

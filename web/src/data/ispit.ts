@@ -10,6 +10,7 @@ export type Q = {
   src?: string; // "kljuc" = ispitna pitanja s ključem, inače dodatna vježba
   ref?: string;
   warn?: string; // ključ odstupa od Pravilnika NN 150/22
+  fig?: "voltmetar" | "otpornik"; // slika uz pitanje (Three.js)
 };
 export const STAGES: Record<number, string> = { 1: "Propisi", 2: "Tehnika", 3: "Postupci" };
 export const QUESTIONS: Q[] = [

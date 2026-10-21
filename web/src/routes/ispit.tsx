@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { lazy, Suspense, useMemo, useState } from "react";
 import { PageHeader, Panel } from "@/components/site";
 import { QUESTIONS, STAGES, type Q } from "@/data/ispit";
 import { KLJUC } from "@/data/ispit_kljuc";
+
+const ExamFigure = lazy(() => import("@/components/ExamFigure"));
 
 const ALL: Q[] = [...KLJUC, ...QUESTIONS.map((q) => ({ ...q, src: "vjezba" }))];
 import { seo } from "@/lib/seo";
@@ -132,6 +134,11 @@ function Page() {
                   {q.ref ? ` · ${q.ref}` : ""}
                 </span>
               </p>
+              {q.fig && (
+                <Suspense fallback={<div className="mt-3 h-40 rounded-lg bg-panel" />}>
+                  <ExamFigure kind={q.fig} revealed={done} />
+                </Suspense>
+              )}
               <div className="mt-3 grid gap-2">
                 {shuffled(q, seed).map((j) => {
                   const ok = done && j === q.c_;
