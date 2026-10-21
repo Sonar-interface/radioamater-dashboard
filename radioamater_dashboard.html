@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Radioamaterski pregled – Hrvatska</title>
+<link rel="icon" href="data:,">
 <style>
 :root{--bg:#0f1419;--panel:#171e26;--line:#26313d;--txt:#e6edf3;--mut:#8b98a5;--acc:#3fb6a8;--warn:#e3b341}
 *{box-sizing:border-box}
@@ -57,7 +58,7 @@ th{color:var(--mut);font-weight:600}
 .info .sec{margin-top:8px;font-size:11px;color:var(--mut)}
 @media (max-width:640px){
   header{padding:10px 14px} h1{font-size:16px}
-  nav{padding:6px 10px;overflow-x:auto;flex-wrap:nowrap}
+  nav{padding:6px 10px;flex-wrap:wrap}
   nav button{white-space:nowrap;font-size:13px;padding:6px 9px}
   section{padding:12px 14px}
   #mapwrap{height:62vh;min-height:360px}
@@ -71,7 +72,7 @@ th{color:var(--mut);font-weight:600}
 <body>
 <header>
   <h1>Radioamaterski pregled – Hrvatska i susjedstvo</h1>
-  <span class="note">DEMO podaci – stvarne veze nisu priključene. Frekvencije provjeri u HAKOM Pravilniku.</span>
+  <span class="note">Stvarni podaci – osvježeno svakih 10 min. Frekvencije provjeri u HAKOM Pravilniku.</span>
 </header>
 <nav>
   <button class="on" data-t="karta">Karta</button>
@@ -100,7 +101,7 @@ th{color:var(--mut);font-weight:600}
       <h4>Legenda · odznači za prikaz sloja</h4>
       <label><span class="sw" style="border:2px solid #3fb6a8;background:rgba(63,182,168,.25)"></span><input type="checkbox" data-layer="borders" checked> Hrvatska (istaknuto)</label>
       <label><span class="sw" style="border:1px solid #8b98a5;background:rgba(139,152,165,.1)"></span><input type="checkbox" data-layer="borders" checked> Susjedne države</label>
-      <label><span class="sw"><svg width="14" height="14"><circle cx="7" cy="7" r="5" fill="#3fb6a8"/></svg></span><input type="checkbox" data-layer="stations" checked> Demo stanice</label>
+      <label><span class="sw"><svg width="14" height="14"><circle cx="7" cy="7" r="5" fill="#3fb6a8"/></svg></span><input type="checkbox" data-layer="stations" checked> Primjer stanica (nisu stvarne)</label>
       <label><span class="sw"><svg width="14" height="14"><circle cx="7" cy="7" r="3" fill="#e3b341"/><line x1="0" y1="13" x2="7" y2="7" stroke="#e3b341" stroke-width="1"/></svg></span><input type="checkbox" data-layer="spots" checked> Spotovi (predajnik → prijemnik)</label>
       <label><span class="sw"><svg width="14" height="14"><rect x="3" y="3" width="8" height="8" fill="#a371f7" transform="rotate(45 7 7)"/></svg></span><input type="checkbox" data-layer="nodes" checked> Meshtastic čvorovi</label>
     </div>
@@ -111,7 +112,7 @@ th{color:var(--mut);font-weight:600}
 <section id="stanice">
   <div class="grid" id="grid"></div>
   <div class="detail" id="detail"></div>
-  <p class="disclaimer">Lista su demo unosi. Stvarni izvor podataka priključuje se kasnije. Pozivni znakovi namjerno nisu uključeni.</p>
+  <p class="disclaimer">Stanice označene kao PRIMJER su ilustracija. Stvarni spotovi (PSKReporter) i Meshtastic čvorovi prikazuju se iz data.json. Pozivni znakovi namjerno nisu uključeni.</p>
 </section>
 
 <section id="frekv">
@@ -304,7 +305,7 @@ function showStation(id){
     ['Koordinate',`${s.lat.toFixed(4)}, ${s.lon.toFixed(4)}`],
     ['Udaljenost od Zagreba',`${d.toFixed(0)} km, smjer ${compass(bearingDeg(ZG,[s.lat,s.lon]))}`],
     ['Status','DEMO (nije stvarna stanica)']
-  ],'Demo podatak. Zamijeni stvarnim unosom ili izvorom.');
+  ],'Primjer, nije stvarna stanica.');
 }
 function showSpot(s){
   const rxLL=s.rxLatLon, txLL=s.txLatLon;
@@ -397,7 +398,7 @@ document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
 const grid = document.getElementById('grid');
 STATIONS.forEach(s=>{
   const c=document.createElement('div'); c.className='card';
-  c.innerHTML=`<h3>${s.id} – ${s.tip}</h3><div><span class="tag on">${s.frek}</span><span class="tag">${s.mod}</span><span class="tag">${s.snaga}</span><span class="tag demo">DEMO</span></div>`;
+  c.innerHTML=`<h3>${s.id} – ${s.tip}</h3><div><span class="tag on">${s.frek}</span><span class="tag">${s.mod}</span><span class="tag">${s.snaga}</span><span class="tag demo">PRIMJER</span></div>`;
   c.onclick=()=>{ showDetail(s.id); };
   grid.appendChild(c);
 });
@@ -410,7 +411,7 @@ function showDetail(id){
    <tr><th>Snaga</th><td>${s.snaga}</td></tr>
    <tr><th>Koordinate</th><td>${s.lat.toFixed(4)}, ${s.lon.toFixed(4)}</td></tr>
    <tr><th>Opis</th><td>${s.opis}</td></tr>
-   <tr><th>Status</th><td>DEMO (nije stvarna stanica)</td></tr></table>`;
+   <tr><th>Status</th><td>PRIMJER (nije stvarna stanica)</td></tr></table>`;
 }
 
 // ---------- ISPIT ----------
