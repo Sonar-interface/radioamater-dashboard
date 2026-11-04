@@ -2,7 +2,7 @@
 
 Stranica: https://sonar-interface.github.io/radioamater-dashboard/
 
-Izgled i stranice preuzeti su iz Lovable projekta "Jadran Radio Kompas" i prilagođeni za GitHub Pages
+Izgled i stranice preuzeti su iz Lovable projekta i prilagođeni za GitHub Pages
 (statični build, hash routing). Dodano: Karta uživo (PSKReporter, Meshtastic MQTT, meshmap.net, repetitori,
 granice HR i susjeda) i Ispit A i P.
 
