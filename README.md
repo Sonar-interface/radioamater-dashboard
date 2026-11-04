@@ -19,5 +19,5 @@ Izvorni kod je u `web/`. Nakon izmjene pokrenuti `web/objavi.sh` i commitati kor
 (`index.html`, `assets/`).
 
 ## Privatnost
-Stranica nema kolačića ni analitike. Lovable prijava grešaka je uklonjena. Skripta ne šalje
+Stranica nema kolačića ni analitike. Skripta ne šalje
 nikakve osobne podatke; samo čita javne izvore.
